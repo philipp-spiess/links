@@ -1,4 +1,3 @@
-/     https://spiess.dev
-/gh   https://github.com/philipp-spiess
-/x    https://x.com/philippspiess
-/vhih https://example.com
+/   https://spiess.dev
+/gh https://github.com/philipp-spiess
+/x  https://x.com/philippspiess
