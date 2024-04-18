@@ -1,3 +1,4 @@
-/   https://spiess.dev
-/gh https://github.com/philipp-spiess
-/x  https://x.com/philippspiess
+/                https://spiess.dev
+/gh              https://github.com/philipp-spiess
+/x               https://x.com/philippspiess
+/postclub-notion https://www.notion.so/Startup-Weekend-1-ca612ca874de4d778aee3e72861b1d42?pvs=13
