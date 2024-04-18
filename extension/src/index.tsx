@@ -31,7 +31,7 @@ export default function Command() {
 		await fs.writeFile(LINKS_FILE, newContent);
 		execSync(`git add ${LINKS_FILE}`, { cwd: LINKS_DIR });
 		execSync(`git commit -m 'Added new link ${args.link}'`, { cwd: LINKS_DIR });
-		execSync(`echo 'https://psp.sh${args.link}' > pbcopy`);
+		execSync("pbcopy", { input: `https://psp.sh${args.link}` });
 		// Figure out how to do this automatically, without requiring human intervention
 		execSync(`open -W -a Terminal '${LINKS_DIR}'`, { cwd: LINKS_DIR });
 
@@ -137,52 +137,4 @@ function CreateLinkAction(props: { onCreate: OnCreate }) {
 			target={<CreateLinkForm onCreate={props.onCreate} />}
 		/>
 	);
-}
-
-function parseData(raw: string): [string, string][] {
-	const links: [string, string][] = [];
-	for (const link of raw.split("\n")) {
-		const [path, url] = link.split(/\s+/);
-		if (!path || !url || path.startsWith("#") || path === "/") {
-			continue;
-		}
-		links.push([path, url]);
-	}
-	return links;
-}
-
-// The raw text is a list of lines, where each line has two whitespace-separated
-// values.
-//
-// This script ensures that the indentation of the second value is the same
-// across all lines by setting the indentation based on the longest first value.
-function syncIndentation(text: string): string {
-	const lines = text.split("\n").filter((l) => l);
-	const longestFirstValue =
-		lines.reduce((acc, line) => {
-			const [firstValue] = line.split(/\s+/);
-			return Math.max(acc, firstValue.length);
-		}, 0) + 1;
-
-	return lines
-		.map((line) => {
-			const [firstValue, secondValue] = line.split(/\s+/);
-			return `${firstValue}${" ".repeat(
-				longestFirstValue - firstValue.length,
-			)}${secondValue}`;
-		})
-		.join("\n");
-}
-
-function isValidLink(link: string): boolean {
-	return /\/[a-zA-Z0-9\-_]+/.test(link);
-}
-
-function isValidUrl(url: string): boolean {
-	try {
-		new URL(url);
-		return true;
-	} catch {
-		return false;
-	}
 }
