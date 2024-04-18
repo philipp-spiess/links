@@ -2,9 +2,11 @@ import { describe, it, expect } from "vitest";
 import dedent from "dedent";
 import { parseData, syncIndentation } from "./utils";
 
-describe("parseData", () => {
+describe("parseDataInSections", () => {
 	it("can parse", () => {
 		const links = dedent`
+
+			/ https://example.com
 
 			# foo
 			/foo https://example.com/foo
@@ -16,10 +18,24 @@ describe("parseData", () => {
 		`;
 
 		expect(parseData(links)).toEqual([
-			["/foo", "https://example.com/foo"],
-			["/bar", "https://example.com/bar"],
-			["/baz", "https://example.com/baz"],
-			["/quxquxqux", "https://example.com/qux"],
+			{
+				title: null,
+				links: [["/", "https://example.com"]],
+			},
+			{
+				title: "foo",
+				links: [
+					["/foo", "https://example.com/foo"],
+					["/bar", "https://example.com/bar"],
+				],
+			},
+			{
+				title: "baz",
+				links: [
+					["/baz", "https://example.com/baz"],
+					["/quxquxqux", "https://example.com/qux"],
+				],
+			},
 		]);
 	});
 });

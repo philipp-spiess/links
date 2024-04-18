@@ -1,13 +1,28 @@
-export function parseData(raw: string): [string, string][] {
-	const links: [string, string][] = [];
-	for (const link of raw.split("\n")) {
-		const [path, url] = link.split(/\s+/);
-		if (!path || !url || path.startsWith("#") || path === "/") {
-			continue;
+type Parsed = {
+	title: string | null;
+	links: [string, string][];
+}[];
+
+export function parseData(raw: string): Parsed {
+	const parsed: Parsed = [];
+	const groups = findGroups(raw.split("\n"));
+
+	for (const group of groups) {
+		let title: string | null = null;
+		const links: [string, string][] = [];
+
+		for (const line of group) {
+			const parsed = parseLine(line);
+			if (parsed) {
+				links.push(parsed);
+			} else if (line.startsWith("#")) {
+				const trimmed = line.slice(1).trim();
+				title = title ? `${title} ${trimmed}` : trimmed;
+			}
 		}
-		links.push([path, url]);
+		parsed.push({ title, links });
 	}
-	return links;
+	return parsed;
 }
 
 // The raw text is a list of lines, where each line has two whitespace-separated

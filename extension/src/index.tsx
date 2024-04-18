@@ -22,11 +22,9 @@ type OnCreate = (link: { link: string; url: string }) => void;
 
 export default function Command() {
 	const { isLoading, data, revalidate } = useFetch<string>(LINKS_URL);
-	const links = parseData(data || "");
+	const groups = parseData(data || "");
 
 	async function onCreate(args: Parameters<OnCreate>[0]) {
-		links.push([args.link, args.url]);
-
 		const content = await fs.readFile(LINKS_FILE, "utf8");
 		const newContent = syncIndentation(`${content}\n${args.link} ${args.url}`);
 		await fs.writeFile(LINKS_FILE, newContent);
@@ -40,29 +38,36 @@ export default function Command() {
 	}
 
 	return (
-		<List isLoading={isLoading} searchBarPlaceholder={"Search links"}>
-			{links.map(([link, url]) => (
+		<List isLoading={isLoading} searchBarPlaceholder="Search links">
+			{groups.map(({ title, links }, index) => (
+				<List.Section title={title ?? undefined} key={index.toString()}>
+					{links.map(([link, url]) => (
+						<List.Item
+							key={link}
+							title={link}
+							icon={Icon.Link}
+							accessories={[{ text: url }]}
+							actions={
+								<ActionPanel>
+									<Action.CopyToClipboard content={`https://psp.sh${link}`} />
+									<Action.OpenInBrowser url={url} />
+								</ActionPanel>
+							}
+						/>
+					))}
+				</List.Section>
+			))}
+			<List.Section title="Actions">
 				<List.Item
-					key={link}
-					title={link}
-					icon={Icon.Link}
-					accessories={[{ text: url }]}
+					title="Create a new link"
+					icon={Icon.Plus}
 					actions={
 						<ActionPanel>
-							<Action.CopyToClipboard content={`https://psp.sh${link}`} />
+							<CreateLinkAction onCreate={onCreate} />
 						</ActionPanel>
 					}
 				/>
-			))}
-			<List.Item
-				title="Create a new link"
-				icon={Icon.Plus}
-				actions={
-					<ActionPanel>
-						<CreateLinkAction onCreate={onCreate} />
-					</ActionPanel>
-				}
-			/>
+			</List.Section>
 		</List>
 	);
 }
