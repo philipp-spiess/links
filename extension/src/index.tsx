@@ -11,6 +11,7 @@ import { useFetch } from "@raycast/utils";
 import fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import { join } from "node:path";
+import { isValidLink, isValidUrl, parseData, syncIndentation } from "./utils";
 
 const LINKS_URL =
 	"https://raw.githubusercontent.com/philipp-spiess/links/main/links.txt";
