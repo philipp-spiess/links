@@ -1,6 +1,6 @@
 # Links Raycast Extension
 
-## Dev
+## Dev & Installation
 
 ```bash
 pnpm dev

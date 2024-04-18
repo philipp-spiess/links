@@ -11,7 +11,6 @@ import { useFetch } from "@raycast/utils";
 import fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import { join } from "node:path";
-import clipboardy from "clipboardy";
 
 const LINKS_URL =
 	"https://raw.githubusercontent.com/philipp-spiess/links/main/links.txt";
@@ -32,8 +31,7 @@ export default function Command() {
 		await fs.writeFile(LINKS_FILE, newContent);
 		execSync(`git add ${LINKS_FILE}`, { cwd: LINKS_DIR });
 		execSync(`git commit -m 'Added new link ${args.link}'`, { cwd: LINKS_DIR });
-		clipboardy.writeSync(`https://psp.sh${args.link}`);
-
+		execSync(`echo 'https://psp.sh${args.link}' > pbcopy`);
 		// Figure out how to do this automatically, without requiring human intervention
 		execSync(`open -W -a Terminal '${LINKS_DIR}'`, { cwd: LINKS_DIR });
 
