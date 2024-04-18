@@ -1,3 +1,4 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "short"
 main = "src/index.ts"
+compatibility_date = "2024-04-05"
